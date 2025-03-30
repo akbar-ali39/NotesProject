@@ -1,0 +1,102 @@
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Alert,
+} from 'react-native';
+import React, {useState} from 'react';
+import CustomBtn from '../Components/CustomBtn';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { BASE_URL } from '../Apis/Api';
+
+const LogingScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation=useNavigation()
+
+const LoginUser=async()=>{
+      if(!email || !password){
+        Alert.alertakbar('Error',"please fill all data" )
+        return 
+      }
+
+      const data={ email,password}
+
+      try {
+        const response=await axios.post(`${BASE_URL}/Login`,data)
+      Alert.alert('Success','Login Successfuly');
+      navigation.navigate('Main',{
+        data:response.data,
+      })
+
+      } catch (error) {
+        Alert.alert("error",'Failed to Login')
+      }
+    }
+
+  return (
+        <View style={styles.Container}>
+      <Text style={styles.title}>Login Screen</Text>
+    <TextInput
+        placeholder="Enter E-Mail"
+        style={styles.input}
+        value={email}
+        onChangeText={text => setEmail(text)}
+      />
+      <TextInput
+        placeholder="Enter Password"
+        style={styles.input}
+        value={password}
+        onChangeText={text => setPassword(text)}
+        secureTextEntry
+      />
+      <CustomBtn title={'Login'} onPress={LoginUser}/>
+
+      <Text style={styles.signupText} onPress={()=>{
+         navigation.navigate('SignUp')
+      }}>Or Create New Account   
+        <Text style={styles.signUp}> Sign Up</Text></Text>
+    </View>
+  );
+};
+
+export default LogingScreen;
+
+const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+    backgroundColor:'#362163'
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: '600',
+    alignSelf: 'center',
+    marginTop: 200,
+    marginBottom: 30,
+    color:'black',
+    color:'#fff'
+  },
+  input: {
+    width: '80%',
+    alignSelf: 'center',
+    height: 48,
+    borderWidth: 1,
+    paddingLeft: 20,
+    borderRadius: 10,
+    marginTop: 25,
+    backgroundColor:'#fff'
+  },
+  signupText:{
+    alignSelf:'center',
+    marginTop:20,
+    color:'#fff'
+  },
+  signUp:{
+    textDecorationLine:'underline',
+    fontSize:17,
+    fontWeight:'600',
+    color:'#fff',
+  }
+});
